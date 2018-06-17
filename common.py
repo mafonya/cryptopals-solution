@@ -1,16 +1,18 @@
-# 1.1 
-# Convert hex to base64
-# The string:
-
-# 49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d
-# Should produce:
-# SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t
-# So go ahead and make that happen. You'll need to use this code for the rest of the exercises.
-
-# Cryptopals Rule
-# Always operate on raw bytes, never on encoded strings. Only use hex and base64 for pretty-printing.
+# --------------------------------------------
+# Common
 
 import binascii
+
+def hex2bin(s):
+	return binascii.unhexlify(s)
+
+def bin2hex(s):
+	return binascii.hexlify(s)
+
+# --------------------------------------------
+# 1.1 
+
+
 
 scores = {
 	"e":12.702,
@@ -53,10 +55,9 @@ def decrypt_with_single_char(s):
 	best_score = 0
 	best_str = ""
 
-	encoded = binascii.unhexlify(s)
 	# print (encoded)
 	for xor_key in range(256):
-	    decoded = ''.join(chr(ord(b) ^ xor_key) for b in encoded)
+	    decoded = ''.join(chr(ord(b) ^ xor_key) for b in s)
 	    score = calc_score(decoded)
 
 	    if score > best_score:
@@ -64,3 +65,15 @@ def decrypt_with_single_char(s):
 	    	best_str = decoded
 
 	return best_str, best_score
+
+
+
+# --------------------------------------------
+# 1.2
+
+def fixed_xor(s1, s2):
+	assert(len(s1) == len(s2)), "Lengths are different in strings to XOR"
+	
+	return "".join([chr(ord(a) ^ ord(b)) for a,b in zip(s1,s2)])
+
+

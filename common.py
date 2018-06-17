@@ -1,18 +1,41 @@
 # --------------------------------------------
 # Common
 
-import binascii
+from binascii import hexlify, unhexlify, b2a_base64, a2b_base64
 
 def hex2bin(s):
-	return binascii.unhexlify(s)
+	return unhexlify(s)
 
 def bin2hex(s):
-	return binascii.hexlify(s)
+	return hexlify(s)
 
 # --------------------------------------------
 # 1.1 
 
+def hex2b64(s):
+	return b2a_base64(unhexlify(s))
 
+def b642hex(s):
+	return hexlify(a2b_base64(s))
+
+
+
+# --------------------------------------------
+# 1.2
+
+def fixed_xor(s1, s2):
+	assert(len(s1) == len(s2)), "Lengths are different in strings to XOR"
+	
+	return "".join([chr(ord(a) ^ ord(b)) for a,b in zip(s1,s2)])
+
+# --------------------------------------------
+# 1.3
+
+def find_single_char_xor_key(s1):
+	pass
+
+# --------------------------------------------
+# 1.4
 
 scores = {
 	"e":12.702,
@@ -67,13 +90,16 @@ def decrypt_with_single_char(s):
 	return best_str, best_score
 
 
-
 # --------------------------------------------
-# 1.2
+# 1.5
 
-def fixed_xor(s1, s2):
-	assert(len(s1) == len(s2)), "Lengths are different in strings to XOR"
-	
-	return "".join([chr(ord(a) ^ ord(b)) for a,b in zip(s1,s2)])
+def repxor(str, key):
+	chipher = ""
+
+	for i,c in enumerate(str):
+		k = key[i % len(key)]		
+		chipher += chr(ord(k) ^ ord(c))
+
+	return hexlify(chipher)
 
 

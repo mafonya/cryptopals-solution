@@ -77,6 +77,7 @@ def calc_score(str):
 def decrypt_with_single_char(s):
 	best_score = 0
 	best_str = ""
+	best_chr = ""
 
 	# print (encoded)
 	for xor_key in range(256):
@@ -86,20 +87,60 @@ def decrypt_with_single_char(s):
 	    if score > best_score:
 	    	best_score = score
 	    	best_str = decoded
+	    	best_chr = xor_key
 
-	return best_str, best_score
+	return best_str, best_score, chr(best_chr)
 
 
 # --------------------------------------------
 # 1.5
 
-def repxor(str, key):
+def repxor(str, key, binary_input=False):
 	chipher = ""
 
 	for i,c in enumerate(str):
 		k = key[i % len(key)]		
 		chipher += chr(ord(k) ^ ord(c))
 
-	return hexlify(chipher)
+	if binary_input:
+		return chipher
+	else:
+		return hexlify(chipher)
 
 
+# --------------------------------------------
+# 1.6
+
+def hamming(s1, s2):
+	if len(s1) != len(s2):
+		return -1;
+
+	diff = 0
+	diff_arr = [ord(a) ^ ord(b) for a,b in zip(s1,s2)]
+
+	for x in diff_arr:
+		diff += bin(x).count("1")
+
+	return diff
+
+
+def split_str_chunks_len(s, l=2):
+    """ Split a string into chunks of length l """
+    return [s[i:i+l] for i in range(0, len(s), l)]
+
+def get_best_key_size(bin_str, min_key_size, max_key_size):
+    d = {}
+    
+    for size in range(min_key_size, max_key_size):
+        hamming_distance = 0
+        chunks = split_str_chunks_len(bin_str, size)
+        # print chunks
+
+        keysize_ham = 0
+        for a,b in zip(chunks[0::2], chunks[1::2]):
+            x = hamming(a,b)
+            keysize_ham += x
+
+        d[size] = float(keysize_ham) / ( float(size) * float(len(chunks)) )
+        
+    return min(d, key=d.get)

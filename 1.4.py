@@ -20,11 +20,11 @@ from common import hex2bin
 best_score = 0
 best_str = ""
 
-lines = open('1.1.txt').read().split("\n")
+lines = open('1.4.txt').read().split("\n")
 
 for line in lines:
 	encoded = hex2bin(line)
-	decrypted, score = decrypt_with_single_char(encoded)
+	decrypted, score, _ = decrypt_with_single_char(encoded)
 
 	if score > best_score:
 		best_score = score
